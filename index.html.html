@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juego de la Reina de Corazones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    .game-container {
+      text-align: center;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 320px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: space-evenly;
+      margin: 20px 0;
+    }
+
+    .card {
+      width: 100px;
+      height: 150px;
+      background-color: #3498db;
+      color: white;
+      font-size: 36px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .card.flipped {
+      background-color: #2ecc71;
+    }
+
+    .card.joker {
+      background-color: #e74c3c;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #8e44ad;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #9b59b6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-container">
+    <h1>Encuentra la Reina de Corazones</h1>
+    <div class="card-container">
+      <div class="card" id="card1" onclick="flipCard(0)">?</div>
+      <div class="card" id="card2" onclick="flipCard(1)">?</div>
+      <div class="card" id="card3" onclick="flipCard(2)">?</div>
+    </div>
+    <p id="result"></p>
+    <button onclick="startGame()">Reiniciar Juego</button>
+  </div>
+
+  <script>
+    let cards = ["joker", "joker", "reina"];
+    let flippedCards = [false, false, false];
+    let gameStarted = false;
+
+    function startGame() {
+      // Barajar las cartas
+      cards = ["joker", "joker", "reina"];
+      cards = shuffle(cards);
+      flippedCards = [false, false, false];
+      gameStarted = true;
+
+      // Actualizar el estado de las cartas
+      resetGame();
+      document.getElementById("result").textContent = "Elige una carta para encontrar la Reina de Corazones.";
+    }
+
+    function shuffle(array) {
+      // Barajar las cartas de forma aleatoria
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Intercambiar elementos
+      }
+      return array;
+    }
+
+    function flipCard(index) {
+      if (!gameStarted || flippedCards[index]) return;
+
+      // Marcar la carta como volteada
+      flippedCards[index] = true;
+
+      // Mostrar el contenido de la carta
+      const card = document.getElementById(`card${index + 1}`);
+      if (cards[index] === "reina") {
+        card.textContent = "❤️";
+        card.classList.add("flipped");
+        document.getElementById("result").textContent = "¡Felicidades! Encontraste la Reina de Corazones.";
+        document.getElementById("result").style.color = "green";
+        gameStarted = false; // Fin del juego
+      } else {
+        card.textContent = "🃏";
+        card.classList.add("joker");
+        document.getElementById("result").textContent = "¡Lo siento! No es la Reina de Corazones.";
+        document.getElementById("result").style.color = "red";
+
+        // Barajar las cartas inmediatamente
+        setTimeout(() => {
+          shuffle(cards); // Barajar de nuevo
+          resetGame(); // Restablecer el juego
+        }, 1500);
+      }
+    }
+
+    function resetGame() {
+      // Reiniciar el estado de las cartas
+      flippedCards = [false, false, false];
+      document.querySelectorAll(".card").forEach((card, index) => {
+        card.textContent = "?";
+        card.classList.remove("flipped", "joker");
+      });
+      gameStarted = true; // Reanudar el juego
+    }
+
+    // Iniciar el juego al cargar la página
+    startGame();
+  </script>
+
+</body>
+</html>
