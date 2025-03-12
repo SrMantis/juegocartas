@@ -1,163 +1,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juego de la Reina de Corazones</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-
-    .game-container {
-      text-align: center;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 320px;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-    }
-
-    .card-container {
-      display: flex;
-      justify-content: space-evenly;
-      margin: 20px 0;
-    }
-
-    .card {
-      width: 100px;
-      height: 150px;
-      background-color: #3498db;
-      color: white;
-      font-size: 36px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 8px;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .card.flipped {
-      background-color: #2ecc71;
-    }
-
-    .card.joker {
-      background-color: #e74c3c;
-    }
-
-    #result {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #8e44ad;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #9b59b6;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baraja de Póker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #2e7d32;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+        .baraja {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+            gap: 10px;
+            justify-content: center;
+            padding: 10px;
+        }
+        .carta {
+            width: 90px;
+            height: 130px;
+            background: white;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .rojo {
+            color: red;
+        }
+        .carta-grande {
+            width: 90vw;
+            height: 90vh;
+            font-size: 15vw;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 </head>
 <body>
-
-  <div class="game-container">
-    <h1>Encuentra la Reina de Corazones</h1>
-    <div class="card-container">
-      <div class="card" id="card1" onclick="flipCard(0)">?</div>
-      <div class="card" id="card2" onclick="flipCard(1)">?</div>
-      <div class="card" id="card3" onclick="flipCard(2)">?</div>
-    </div>
-    <p id="result"></p>
-    <button onclick="startGame()">Reiniciar Juego</button>
-  </div>
-
-  <script>
-    let cards = ["joker", "joker", "reina"];
-    let flippedCards = [false, false, false];
-    let gameStarted = false;
-
-    function startGame() {
-      // Barajar las cartas
-      cards = ["joker", "joker", "reina"];
-      cards = shuffle(cards);
-      flippedCards = [false, false, false];
-      gameStarted = true;
-
-      // Actualizar el estado de las cartas
-      resetGame();
-      document.getElementById("result").textContent = "Elige una carta para encontrar la Reina de Corazones.";
-    }
-
-    function shuffle(array) {
-      // Barajar las cartas de forma aleatoria
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]]; // Intercambiar elementos
-      }
-      return array;
-    }
-
-    function flipCard(index) {
-      if (!gameStarted || flippedCards[index]) return;
-
-      // Marcar la carta como volteada
-      flippedCards[index] = true;
-
-      // Mostrar el contenido de la carta
-      const card = document.getElementById(`card${index + 1}`);
-      if (cards[index] === "reina") {
-        card.textContent = "❤️";
-        card.classList.add("flipped");
-        document.getElementById("result").textContent = "¡Felicidades! Encontraste la Reina de Corazones.";
-        document.getElementById("result").style.color = "green";
-        gameStarted = false; // Fin del juego
-      } else {
-        card.textContent = "🃏";
-        card.classList.add("joker");
-        document.getElementById("result").textContent = "¡Lo siento! No es la Reina de Corazones.";
-        document.getElementById("result").style.color = "red";
-
-        // Barajar las cartas inmediatamente
-        setTimeout(() => {
-          shuffle(cards); // Barajar de nuevo
-          resetGame(); // Restablecer el juego
-        }, 1500);
-      }
-    }
-
-    function resetGame() {
-      // Reiniciar el estado de las cartas
-      flippedCards = [false, false, false];
-      document.querySelectorAll(".card").forEach((card, index) => {
-        card.textContent = "?";
-        card.classList.remove("flipped", "joker");
-      });
-      gameStarted = true; // Reanudar el juego
-    }
-
-    // Iniciar el juego al cargar la página
-    startGame();
-  </script>
-
+    <h1>Baraja de Póker</h1>
+    <div class="baraja" id="baraja"></div>
+    
+    <script>
+        const palos = ['♥', '♦', '♣', '♠'];
+        const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const barajaDiv = document.getElementById("baraja");
+        
+        function crearCarta(valor, palo) {
+            const carta = document.createElement("div");
+            carta.classList.add("carta");
+            if (palo === '♥' || palo === '♦') {
+                carta.classList.add("rojo");
+            }
+            carta.innerHTML = `<span>${valor}</span><span>${palo}</span>`;
+            carta.onclick = () => mostrarCartaGrande(valor, palo);
+            barajaDiv.appendChild(carta);
+        }
+        
+        function mostrarCartaGrande(valor, palo) {
+            barajaDiv.innerHTML = "";
+            const cartaGrande = document.createElement("div");
+            cartaGrande.classList.add("carta", "carta-grande");
+            if (palo === '♥' || palo === '♦') {
+                cartaGrande.classList.add("rojo");
+            }
+            cartaGrande.innerHTML = `<span>${valor}</span><span>${palo}</span>`;
+            cartaGrande.onclick = () => location.reload();
+            document.body.appendChild(cartaGrande);
+        }
+        
+        // Crear la baraja de 52 cartas
+        for (let palo of palos) {
+            for (let valor of valores) {
+                crearCarta(valor, palo);
+            }
+        }
+        
+        // Agregar comodines
+        for (let i = 0; i < 2; i++) {
+            const joker = document.createElement("div");
+            joker.classList.add("carta");
+            joker.innerHTML = "JOKER";
+            joker.style.color = i === 0 ? "red" : "black";
+            joker.onclick = () => mostrarJoker(i);
+            barajaDiv.appendChild(joker);
+        }
+        
+        function mostrarJoker(index) {
+            barajaDiv.innerHTML = "";
+            const jokerGrande = document.createElement("div");
+            jokerGrande.classList.add("carta", "carta-grande");
+            jokerGrande.innerHTML = "JOKER";
+            jokerGrande.style.color = index === 0 ? "red" : "black";
+            jokerGrande.onclick = () => location.reload();
+            document.body.appendChild(jokerGrande);
+        }
+    </script>
 </body>
 </html>
